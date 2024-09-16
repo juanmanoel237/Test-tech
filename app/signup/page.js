@@ -36,24 +36,22 @@ export default function SignupPage() {
             return;
         }
 
-        //ici le call api vers /api/auth/signup
-        try{
-            const response = await axios.post('https://api.example.com/auth/signup', formData)
+        // Ici le call API vers /api/auth/signup
+        try {
+            const response = await axios.post('https://api.example.com/auth/signup', formData);
 
             console.log('Inscription réussie: ', response.data);
-            setMessage('Inscription réussie')
-            setIsError(false)
+            setMessage('Inscription réussie');
+            setIsError(false);
             
-        }catch(err){
-            console.log("Erreur l'inscription", err);
-            setIsError('Email non valide')
+        } catch (err) {
+            console.log("Erreur lors de l'inscription", err);
+            setMessage("Erreur lors de l'inscription. Veuillez réessayer");
+            setIsError(true);
         }
     };
 
-    };
-
     return (
-        //ici le front
         <div className="flex justify-center items-center h-screen bg-gray-100">
             <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
                 <h1 className="text-2xl font-bold mb-6 text-center text-gray-400">Inscription</h1>
