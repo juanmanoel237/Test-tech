@@ -35,13 +35,18 @@ export default function LoginPage() {
             setIsError(true);
             return;
         }
-        
+
         // call vers /api/auth/login
         try{
             const response = await axios.post('https://api.example.com/auth/login', formData)
+            // Stockage du token dans le localStorage après la connexion réussie
+            const token = response.data.token;
+            localStorage.setItem('authToken', token);
+
             console.log('Connexion réussie: ', response.data);
             setMessage('Connexion réussie')
             setIsError(false)
+            
         }catch(err){
             console.log('Erreur lors de la connexion', err);
             setIsError('Identifiants incorrects')
