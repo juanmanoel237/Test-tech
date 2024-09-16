@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import axios from 'axios';
 
 export default function SignupPage() {
     const [formData, setFormData] = useState({
@@ -19,9 +20,35 @@ export default function SignupPage() {
         });
     };
 
+    const validateForm = () => {
+        // Vérification que les champs ne sont pas vides
+        if (formData.name.trim() === '' || formData.email.trim() === '' || formData.password.trim() === '') {
+            return false;
+        }
+        return true;
+    };
+
     const handleSubmit = async (e) => {
-        //ici le call api vers /api/auth/signup
         e.preventDefault();
+        if (!validateForm()) {
+            setMessage('Veuillez remplir tous les champs.');
+            setIsError(true);
+            return;
+        }
+
+        //ici le call api vers /api/auth/signup
+        try{
+            const response = await axios.post('https://api.example.com/auth/signup', formData)
+
+            console.log('Inscription réussie: ', response.data);
+            setMessage('Inscription réussie')
+            setIsError(false)
+            
+        }catch(err){
+            console.log("Erreur l'inscription", err);
+            setIsError('Email non valide')
+        }
+    };
 
     };
 
