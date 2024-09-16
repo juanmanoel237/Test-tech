@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import axios from 'axios';
 
 export default function LoginPage() {
     const [formData, setFormData] = useState({
@@ -21,6 +22,14 @@ export default function LoginPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         // call vers /api/auth/login
+        try{
+            const response = await axios.post('https://api.example.com/auth/login', formData)
+            console.log('Connexion réussie: ', response.data);
+            
+        }catch(err){
+            console.log('Erreur lors de la connexion', err);
+            setIsError('Identifiants incorrects')
+        }
     };
 
     return (
