@@ -19,13 +19,29 @@ export default function LoginPage() {
         });
     };
 
+    const validateForm = () => {
+        // Vérification que les champs ne sont pas vides
+        if (formData.email.trim() === '' || formData.password.trim() === '') {
+            return false;
+        }
+        return true;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!validateForm()) {
+            setMessage('Veuillez remplir tous les champs.');
+            setIsError(true);
+            return;
+        }
+        
         // call vers /api/auth/login
         try{
             const response = await axios.post('https://api.example.com/auth/login', formData)
             console.log('Connexion réussie: ', response.data);
-            
+            setMessage('Connexion réussie')
+            setIsError(false)
         }catch(err){
             console.log('Erreur lors de la connexion', err);
             setIsError('Identifiants incorrects')
