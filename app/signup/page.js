@@ -23,6 +23,8 @@ export default function SignupPage() {
     const validateForm = () => {
         // Vérification que les champs ne sont pas vides
         if (formData.name.trim() === '' || formData.email.trim() === '' || formData.password.trim() === '') {
+            setMessage('Tous les champs sont requis.');
+            setIsError(true);
             return false;
         }
         return true;
@@ -31,23 +33,26 @@ export default function SignupPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!validateForm()) {
-            setMessage('Veuillez remplir tous les champs.');
-            setIsError(true);
             return;
         }
 
         // Ici le call API vers /api/auth/signup
         try {
-            const response = await axios.post('https://api.example.com/auth/signup', formData);
+            const response = await axios.post('/api/auth/signup', formData);
 
             console.log('Inscription réussie: ', response.data);
             setMessage('Inscription réussie');
             setIsError(false);
-            
         } catch (err) {
-            console.log("Erreur lors de l'inscription", err);
-            setMessage("Erreur lors de l'inscription. Veuillez réessayer");
+            if (err.response && err.response.data && err.response.data.message) {
+                // Si l'API renvoie un message d'erreur
+                setMessage(err.response.data.message);
+            } else {
+                // Message générique en cas d'erreur
+                setMessage("Erreur lors de l'inscription. Veuillez réessayer.");
+            }
             setIsError(true);
+            console.log("Erreur lors de l'inscription", err);
         }
     };
 
@@ -103,7 +108,6 @@ export default function SignupPage() {
                         className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
                         S&apos;inscrire
-
                     </button>
                 </form>
 

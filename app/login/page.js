@@ -22,6 +22,8 @@ export default function LoginPage() {
     const validateForm = () => {
         // Vérification que les champs ne sont pas vides
         if (formData.email.trim() === '' || formData.password.trim() === '') {
+            setMessage('Veuillez remplir tous les champs.');
+            setIsError(true);
             return false;
         }
         return true;
@@ -31,25 +33,30 @@ export default function LoginPage() {
         e.preventDefault();
 
         if (!validateForm()) {
-            setMessage('Veuillez remplir tous les champs.');
-            setIsError(true);
             return;
         }
 
         // call vers /api/auth/login
-        try{
-            const response = await axios.post('https://api.example.com/auth/login', formData)
+        try {
+            const response = await axios.post('/api/auth/login', formData);
+
             // Stockage du token dans le localStorage après la connexion réussie
             const token = response.data.token;
             localStorage.setItem('authToken', token);
 
             console.log('Connexion réussie: ', response.data);
-            setMessage('Connexion réussie')
-            setIsError(false)
-            
-        }catch(err){
+            setMessage('Connexion réussie');
+            setIsError(false);
+
+        } catch (err) {
+            // Vérification si l'API renvoie un message d'erreur spécifique
+            if (err.response && err.response.data && err.response.data.message) {
+                setMessage(err.response.data.message);
+            } else {
+                setMessage('Erreur lors de la connexion. Veuillez réessayer.');
+            }
+            setIsError(true);
             console.log('Erreur lors de la connexion', err);
-            setIsError('Identifiants incorrects')
         }
     };
 
